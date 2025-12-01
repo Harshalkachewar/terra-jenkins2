@@ -1,29 +1,28 @@
 terraform {
-  required_version = ">= 1.2.0"
+  required_version = ">= 1.1.0"
 
   required_providers {
     null = {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
-
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.0"
-    }
   }
 }
 
-# Create a folder
-resource "local_file" "demo_file" {
-  content  = "Terraform file created on Linux server"
-  filename = "/tmp/terraform-demo-file.txt"
-}
+# Remote execution on your Linux server
+resource "null_resource" "remote_file" {
 
-# Execute shell command
-resource "null_resource" "run_command" {
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'File created by Terraform from Jenkins' > /tmp/terraform-created-file.txt",
+      "chmod 644 /tmp/terraform-created-file.txt"
+    ]
 
-  provisioner "local-exec" {
-    command = "echo 'Hello from Terraform on Linux!' >> /tmp/terraform-output.txt"
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = var.server_password
+      host     = var.server_ip
+    }
   }
 }
