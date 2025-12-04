@@ -1,28 +1,27 @@
-terraform {
-  required_version = ">= 1.1.0"
 
+terraform {
   required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.0"
+    linux = {
+      source = "mavidser/linux"
+      version = "1.0.2"
     }
   }
 }
-
-# Remote execution on your Linux server
-resource "null_resource" "remote_file" {
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'File created by Terraform from Jenkins' > /tmp/terraform-created-file.txt",
-      "chmod 644 /tmp/terraform-created-file.txt"
-    ]
-
-    connection {
-      type     = "ssh"
-      user     = "root"
-      password = var.server_password
-      host     = var.server_ip
-    }
-  }
+provider "linux" {
+        host = "192.168.1.190"
+        user = "root"
+        password = "redhat"
+}
+resource "linux_user" "res1" {
+        name = "${keys(var.map1)[0]}"
+        uid = "${var.map1["Suser5"]
+}
+}
+resource "linux_user" "res2" {
+        name = "${keys(var.map1)[1]}"
+        uid = "${var.map1["${keys(var.map1)[1]}"]}"
+}
+resource "linux_user" "res3" {
+        name = "${keys(var.map1)[2]}"
+        uid = "${var.map1["Suser7"]}"
 }
