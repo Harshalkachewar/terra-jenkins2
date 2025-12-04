@@ -1,27 +1,22 @@
-
 terraform {
   required_providers {
     linux = {
-      source = "mavidser/linux"
+      source  = "mavidser/linux"
       version = "1.0.2"
     }
   }
 }
+
 provider "linux" {
-        host = "192.168.1.190"
-        user = "root"
-        password = "redhat"
+  host     = "192.168.1.190"   # change as per your server
+  user     = "root"
+  password = "redhat"               # change to real password
 }
-resource "linux_user" "res1" {
-        name = "${keys(var.map1)[0]}"
-        uid = "${var.map1["Suser5"]
-}
-}
-resource "linux_user" "res2" {
-        name = "${keys(var.map1)[1]}"
-        uid = "${var.map1["${keys(var.map1)[1]}"]}"
-}
-resource "linux_user" "res3" {
-        name = "${keys(var.map1)[2]}"
-        uid = "${var.map1["Suser7"]}"
+
+# Create multiple users using map from vars.tf
+resource "linux_user" "users" {
+  for_each = var.map1
+
+  name = each.key          # Key = user name
+  uid  = each.value        # Value = UID from map
 }
